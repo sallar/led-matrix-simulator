@@ -9,6 +9,7 @@ const Pixel = ({ on, color = {r: 0, g: 0, b: 0, a: 1} }) => (
     style={{
       width: '5px',
       height: '5px',
+      borderRadius: '50%',
       opacity: color.a,
       backgroundColor: on ? rgbToHex(color.r, color.g, color.b) : '#ededed',
       margin: '1px',
@@ -17,7 +18,7 @@ const Pixel = ({ on, color = {r: 0, g: 0, b: 0, a: 1} }) => (
 );
 
 Pixel.propTypes = {
-  status: PropTypes.bool,
+  on: PropTypes.bool,
   color: PropTypes.object
 };
 

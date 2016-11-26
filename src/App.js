@@ -25,8 +25,6 @@ for (let i = 0; i < 16; i++) {
   data.push(row);
 }
 
-console.log(data);
-
 class App extends Component {
   render() {
     return (
