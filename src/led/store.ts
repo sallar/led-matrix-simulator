@@ -1,29 +1,37 @@
-interface Pixel {
-  on: boolean;
-  color: Object;
+interface IFill {
+  (x: number, y: number, r: number, g: number, b: number, a: number): void;
 }
 
-interface IStore {
-  matrix: Pixel[][],
-  fill: Function
+interface IColor {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+}
+
+interface IPixel {
+  on: boolean;
+  color?: IColor;
+}
+
+export interface IMatrix {
+  [index: number]: IPixel;
+}
+
+export interface IStore {
+  matrix: IMatrix,
+  fill: IFill
 }
 
 export function createStore(xw: number, yw: number): IStore {
-	const matrix: Array<any> = [];
-  for (let i = 0; i < yw; i += 1) {
-  	const row: Array<any> = [];
-  	for (let j = 0; j < xw; j += 1) {
-    	row.push({
-      	on: false
-      });
-    }
-    matrix.push(row);
-  }
+  const matrix: IMatrix = Array(xw * yw).fill({
+    on: false
+  });
   
 	return {
   	matrix,
-  	fill(x: number, y: number, r: number = 0, g: number = 0, b: number = 0, a: number = 1) {
-    	matrix[y][x] = {
+  	fill(x = 0, y = 0, r = 0, g = 0, b = 0, a = 1) {
+    	matrix[(y * xw) + x] = {
       	on: true,
         color: {
         	r, g, b, a

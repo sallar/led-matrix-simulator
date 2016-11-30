@@ -1,3 +1,5 @@
+import { IMatrix } from './store';
+
 const DEFAULT_OPTS = {
   x: 32,
   y: 16,
@@ -27,20 +29,24 @@ class LedMatrix {
     this.canvas.style.height = `${height / 2}px`;
   }
   
-  draw(data: any) {
+  draw(data: IMatrix) {
   	const { pixelWidth, pixelHeight, margin, x, y } = this.opts;
+
   	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    for (let i = 0; i < y; i += 1) {
-      for (let j = 0; j < x; j += 1) {
-        const { on, color } = data[i][j];
-        this.ctx.fillStyle = on ? `rgba(${color.r},${color.g},${color.b},${color.a})` : 'rgba(0,0,0,.1)';
-        this.ctx.fillRect(
-        	j * (pixelWidth + margin),
-          i * (pixelHeight + margin),
-          pixelWidth,
-          pixelHeight
-        );
-      }
+    const pixels = this.opts.x * this.opts.y;
+
+    for (let i = 0; i < pixels; i += 1) {
+      const { on, color } = data[i];
+      const y = Math.floor(i / this.opts.x);
+      const x = i - (y * this.opts.x);
+      
+      this.ctx.fillStyle = on ? `rgba(${color.r},${color.g},${color.b},${color.a})` : 'rgba(0,0,0,.1)';
+      this.ctx.fillRect(
+        x * (pixelWidth + margin),
+        y * (pixelHeight + margin),
+        pixelWidth,
+        pixelHeight
+      );
     }
   }
 }
