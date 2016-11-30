@@ -2,10 +2,10 @@ import LedMatrix from './led/matrix';
 import { font, CHAR_WIDTH, CHAR_HEIGHT } from './led/fonts/5x5';
 import { createStore } from './led/store';
 
-const canvas = document.querySelector('.matrix');
+const canvas = document.querySelector('.matrix') as HTMLCanvasElement;
 const led = new LedMatrix(canvas);
 
-function text(lines, font, r, g, b, a) {
+function text(lines: string[], font: string[][], r: number, g: number, b: number, a: number) {
   const store = createStore(32, 16);
   
   lines.forEach((ch, line) => {

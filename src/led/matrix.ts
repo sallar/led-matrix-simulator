@@ -7,7 +7,11 @@ const DEFAULT_OPTS = {
 };
 
 class LedMatrix {
-	constructor(canvas, opts = {}) {
+  private canvas: HTMLCanvasElement;
+  private ctx: CanvasRenderingContext2D;
+  private opts: any;
+
+	constructor(canvas: HTMLCanvasElement, opts = {}) {
   	this.canvas = canvas;
   	this.opts = Object.assign({}, DEFAULT_OPTS, opts);
     this.setup();
@@ -23,7 +27,7 @@ class LedMatrix {
     this.canvas.style.height = `${height / 2}px`;
   }
   
-  draw(data) {
+  draw(data: any) {
   	const { pixelWidth, pixelHeight, margin, x, y } = this.opts;
   	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     for (let i = 0; i < y; i += 1) {

@@ -6,12 +6,14 @@ module.exports = {
     path: './public/',
     filename: 'bundle.js'
   },
+  resolve: {
+    extensions: ['', '.json', '.ts', '.js']
+  },
   module: {
     loaders: [
       {
-        test: /\.js$/,
-        loader: 'babel',
-        exclude: /node_modules/
+        test: /\.ts$/,
+        loader: 'ts'
       },
       {
         test: /\.html$/,
