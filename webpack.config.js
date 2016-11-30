@@ -7,7 +7,10 @@ module.exports = {
     filename: 'bundle.js'
   },
   resolve: {
-    extensions: ['', '.json', '.ts', '.js']
+    extensions: ['', '.json', '.ts', '.js'],
+    alias: {
+      'vue$': 'vue/dist/vue.common.js'
+    }
   },
   module: {
     loaders: [
@@ -18,6 +21,10 @@ module.exports = {
       {
         test: /\.html$/,
         loader: 'html'
+      },
+      {
+        test: /\.css$/,
+        loaders: ['style', 'css']
       }
     ]
   },

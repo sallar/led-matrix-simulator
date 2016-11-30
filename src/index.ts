@@ -1,32 +1,48 @@
+import * as Vue from 'vue';
 import LedMatrix from './led/matrix';
-import { font, CHAR_WIDTH, CHAR_HEIGHT } from './led/fonts/5x5';
 import { createStore } from './led/store';
+import { font, CHAR_WIDTH, CHAR_HEIGHT } from './led/fonts/5x5';
+import './style.css';
 
 let LED_WIDTH = 32;
 let LED_HEIGHT = 16;
 const canvas = document.querySelector('.matrix') as HTMLCanvasElement;
 const ranges = [...document.querySelectorAll('input[type=range]')];
+const defaults = {
+  x: 32,
+  y: 16,
+  line1: '$ 500',
+  line2: 'Cash#'
+};
 
-ranges.forEach((range: HTMLInputElement) => {
-  range.addEventListener('change', function() {
-    const value = parseInt(this.value, 10); 
-    if (/x/.test(this.id)) {
-      LED_WIDTH = value;
-    } else {
-      LED_HEIGHT = value;
+const app = new Vue({
+  el: '#app',
+  data: {
+    x: defaults.x,
+    y: defaults.y,
+    line1: defaults.line1,
+    line2: defaults.line2
+  },
+  methods: {
+    change() {
+      let _this: any = this;
+      render(
+        parseInt(_this.x, 10),
+        parseInt(_this.y, 10),
+        [_this.line1, _this.line2]
+      );
     }
-    render();
-  });
+  }
 });
 
-function render() {
+function render(x: number, y: number, lines: string[]) {
   const led = new LedMatrix(canvas, {
-    x: LED_WIDTH,
-    y: LED_HEIGHT
+    x,
+    y
   });
 
   function text(lines: string[], font: string[][], r: number, g: number, b: number, a: number) {
-    const store = createStore(LED_WIDTH, LED_HEIGHT);
+    const store = createStore(x, y);
     
     lines.forEach((ch, line) => {
       // For each character
@@ -53,8 +69,8 @@ function render() {
     return store.matrix;
   }
 
-  let matrix = text(['$ 500', 'YOLO!'], font, 0, 0, 255, .8);
+  let matrix = text(lines, font, 0, 255, 0, .8);
   led.draw(matrix);
 }
 
-render();
+render(defaults.x, defaults.y, [defaults.line1, defaults.line2])
