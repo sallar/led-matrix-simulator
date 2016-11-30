@@ -1,6 +1,14 @@
 import { IMatrix } from './store';
 
-const DEFAULT_OPTS = {
+interface ILedMatrixOptions {
+  x?: number;
+  y?: number;
+  pixelWidth?: number;
+  pixelHeight?: number;
+  margin?: number;
+}
+
+const DEFAULT_OPTS: ILedMatrixOptions = {
   x: 32,
   y: 16,
   pixelWidth: 10,
@@ -11,9 +19,9 @@ const DEFAULT_OPTS = {
 class LedMatrix {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
-  private opts: any;
+  private opts: ILedMatrixOptions;
 
-	constructor(canvas: HTMLCanvasElement, opts = {}) {
+	constructor(canvas: HTMLCanvasElement, opts: ILedMatrixOptions = {}) {
   	this.canvas = canvas;
   	this.opts = Object.assign({}, DEFAULT_OPTS, opts);
     this.setup();
