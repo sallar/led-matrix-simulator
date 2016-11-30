@@ -28,14 +28,12 @@ export function createStore(xw: number, yw: number): IStore {
     on: false
   });
   
-	return {
-  	matrix,
-  	fill(x = 0, y = 0, r = 0, g = 0, b = 0, a = 1) {
-    	matrix[(y * xw) + x] = {
-      	on: true,
-        color: {
-        	r, g, b, a
-        }
+  return {
+    matrix,
+    fill(x = 0, y = 0, r = 0, g = 0, b = 0, a = 1) {
+      matrix[(y * xw) + x] = {
+        on: true,
+        color: { r, g, b, a }
       };
     }
   };
