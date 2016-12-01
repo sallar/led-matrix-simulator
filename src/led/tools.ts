@@ -8,3 +8,8 @@ export function prepareFont(fontMap: number[][]): string[][] {
     num => hexToBin(num).split('').reverse().join('')
   ));
 }
+
+export function hexToRGB(hexStr: string): Array<number> {
+    const hex = parseInt(hexStr.substr(1), 16);
+    return [hex >> 16, hex >> 8 & 0xFF, hex & 0xFF];
+}

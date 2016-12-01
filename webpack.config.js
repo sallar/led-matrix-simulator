@@ -3,14 +3,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: './src/index',
   output: {
-    path: './public/',
+    path: './dist/',
     filename: 'bundle.js'
   },
   resolve: {
-    extensions: ['', '.json', '.ts', '.tsx', '.js', '.jsx'],
-    alias: {
-      'vue$': 'vue/dist/vue.common.js'
-    }
+    extensions: ['', '.json', '.ts', '.tsx', '.js', '.jsx']
   },
   module: {
     loaders: [

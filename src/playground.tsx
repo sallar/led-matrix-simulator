@@ -1,12 +1,14 @@
 import { h, Component, render } from 'preact';
 import LedMatrix from './led/matrix';
 import { createStore } from './led/store';
+import { hexToRGB } from './led/tools';
 import { font, CHAR_WIDTH, CHAR_HEIGHT } from './led/fonts/5x5';
 
 interface State {
   cols?: number;
   rows?: number;
   text?: string;
+  color?: string;
 }
 
 class Playground extends Component<any, State> {
@@ -16,9 +18,10 @@ class Playground extends Component<any, State> {
   constructor() {
     super();
     this.state = {
-      cols: 64,
-      rows: 32,
-      text: 'Hello\nThere'
+      cols: 32,
+      rows: 16,
+      text: 'Hello\nThere',
+      color: '#ff0000'
     };
   }
 
@@ -33,6 +36,7 @@ class Playground extends Component<any, State> {
   draw() {
     const store = createStore(this.state.cols, this.state.rows);
     const lines = this.state.text.split('\n');
+    const [ r, g, b ] = hexToRGB(this.state.color);
 
     lines.forEach((ch: string, line: number) => {
       // For each character
@@ -48,7 +52,7 @@ class Playground extends Component<any, State> {
               store.fill(
                 x + (i * CHAR_WIDTH),
                 y + (line * CHAR_HEIGHT),
-                255, 0, 0, 1
+                r, g, b, 1
               );
             }
           }
@@ -68,21 +72,22 @@ class Playground extends Component<any, State> {
     this.draw();
   }
 
-  textChange(e: any) {
+  propChange(e: any, prop: string) {
     this.setState({
-      text: e.target.value
+      [prop]: e.target.value
     });
     this.draw();
   }
 
-  render(_: any, { rows, cols, text }: State) {
+  render(_: any, { rows, cols, text, color }: State) {
     return (
       <div>
         x: {cols}
         <input type="range" min="32" max="64" onInput={e => this.slideChange(e, 'cols')} value={cols.toString()}/><br/>
         y: {rows}
         <input type="range" min="16" max="32" onInput={e => this.slideChange(e, 'rows')} value={rows.toString()}/><br/>
-        <textarea value={text} onKeyUp={e => this.textChange(e)}/><br/>
+        <textarea value={text} onKeyUp={e => this.propChange(e, 'text')}/><br/>
+        <input type="color" value={color} onChange={e => this.propChange(e, 'color')}/><br/>
         <div class="led">
           <canvas ref={canvas => this.canvas = canvas as HTMLCanvasElement}></canvas>
         </div>
