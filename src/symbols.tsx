@@ -54,20 +54,23 @@ class Symbols extends Component<any, State> {
 
   render(_: any, { shape }: State) {
     return (
-      <div>
-        {Object.keys(shapes).map(shapeName =>
-          <label>
-            <input
-              type="radio"
-              value={shapeName}
-              checked={shapeName === shape}
-              onChange={e => this.handleShapeChange(shapeName)}
-              /> {shapeName}
-          </label> 
-        )}
-        <br/>
-        <div class="led">
-          <canvas ref={canvas => this.canvas = canvas as HTMLCanvasElement}></canvas>
+      <div className="row">
+        <div className="column">
+          {Object.keys(shapes).map(shapeName =>
+            <label>
+              <input
+                type="radio"
+                value={shapeName}
+                checked={shapeName === shape}
+                onChange={e => this.handleShapeChange(shapeName)}
+                /> {shapeName}
+            </label> 
+          )}
+        </div>
+        <div className="column column-60">
+          <div class="led">
+            <canvas ref={canvas => this.canvas = canvas as HTMLCanvasElement}></canvas>
+          </div>
         </div>
       </div>
     )

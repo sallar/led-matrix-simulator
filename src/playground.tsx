@@ -62,25 +62,29 @@ class Playground extends Component<any, State> {
 
   render(_: any, { rows, cols, text, color, fonts, font }: State) {
     return (
-      <div>
-        x: {cols}
-        <input type="range" min="32" max="64" onInput={e => this.slideChange(e, 'cols')} value={cols.toString()}/><br/>
-        y: {rows}
-        <input type="range" min="16" max="32" onInput={e => this.slideChange(e, 'rows')} value={rows.toString()}/><br/>
-        <textarea value={text} onKeyUp={e => this.propChange(e, 'text')}/><br/>
-        <input type="color" value={color} onChange={e => this.propChange(e, 'color')}/><br/>
-        {fonts.map(fontName =>
-          <div>
-            <input
-              type="radio"
-              value={fontName}
-              checked={fontName === font}
-              onChange={e => this.propChange(e, 'font')}
-              /> {fontName}
-          </div> 
-        )}
-        <div class="led">
-          <canvas ref={canvas => this.canvas = canvas as HTMLCanvasElement}></canvas>
+      <div className="row">
+        <div className="column">
+          x: {cols}
+          <input type="range" min="32" max="64" onInput={e => this.slideChange(e, 'cols')} value={cols.toString()}/><br/>
+          y: {rows}
+          <input type="range" min="16" max="32" onInput={e => this.slideChange(e, 'rows')} value={rows.toString()}/><br/>
+          <textarea value={text} onKeyUp={e => this.propChange(e, 'text')}/><br/>
+          <input type="color" value={color} onChange={e => this.propChange(e, 'color')}/><br/>
+          {fonts.map(fontName =>
+            <label>
+              <input
+                type="radio"
+                value={fontName}
+                checked={fontName === font}
+                onChange={e => this.propChange(e, 'font')}
+                /> {fontName}
+            </label> 
+          )}
+        </div>
+        <div className="column column-60">
+          <div class="led">
+            <canvas ref={canvas => this.canvas = canvas as HTMLCanvasElement}></canvas>
+          </div>
         </div>
       </div>
     )
