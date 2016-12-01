@@ -2,13 +2,16 @@ import { h, Component, render } from 'preact';
 import LedMatrix from './led/matrix';
 import { createStore } from './led/store';
 import { hexToRGB } from './led/tools';
-import { font, CHAR_WIDTH, CHAR_HEIGHT } from './led/fonts/5x5';
+import { font } from './led/fonts/tama';
+import * as fonts from './led/fonts';
 
 interface State {
   cols?: number;
   rows?: number;
   text?: string;
   color?: string;
+  fonts?: string[];
+  font?: string;
 }
 
 class Playground extends Component<any, State> {
@@ -21,7 +24,9 @@ class Playground extends Component<any, State> {
       cols: 32,
       rows: 16,
       text: 'Hello\nThere',
-      color: '#ff0000'
+      color: '#5fd3ff',
+      fonts: Object.keys(fonts),
+      font: 'fivebyfive'
     };
   }
 
@@ -35,31 +40,7 @@ class Playground extends Component<any, State> {
 
   draw() {
     const store = createStore(this.state.cols, this.state.rows);
-    const lines = this.state.text.split('\n');
-    const [ r, g, b ] = hexToRGB(this.state.color);
-
-    lines.forEach((ch: string, line: number) => {
-      // For each character
-      for (let i = 0; i < ch.length; i += 1) {
-        const ind = ch.charCodeAt(i) - 32;
-        const fontRow = font[ind];
-        // For each column
-        for (let x = 0; x < CHAR_WIDTH; x += 1) {
-          const col = fontRow[x];
-          // For each pixel
-          for (let y = 0; y < CHAR_HEIGHT; y += 1) {
-            if (col[y] === '1') {
-              store.fill(
-                x + (i * CHAR_WIDTH),
-                y + (line * CHAR_HEIGHT),
-                r, g, b, 1
-              );
-            }
-          }
-        }
-      }
-    });
-
+    store.write(this.state.text, (fonts as any)[this.state.font], this.state.color);
     this.led.clear();
     this.led.draw(store.matrix);
   }
@@ -79,7 +60,7 @@ class Playground extends Component<any, State> {
     this.draw();
   }
 
-  render(_: any, { rows, cols, text, color }: State) {
+  render(_: any, { rows, cols, text, color, fonts, font }: State) {
     return (
       <div>
         x: {cols}
@@ -88,6 +69,16 @@ class Playground extends Component<any, State> {
         <input type="range" min="16" max="32" onInput={e => this.slideChange(e, 'rows')} value={rows.toString()}/><br/>
         <textarea value={text} onKeyUp={e => this.propChange(e, 'text')}/><br/>
         <input type="color" value={color} onChange={e => this.propChange(e, 'color')}/><br/>
+        {fonts.map(fontName =>
+          <div>
+            <input
+              type="radio"
+              value={fontName}
+              checked={fontName === font}
+              onChange={e => this.propChange(e, 'font')}
+              /> {fontName}
+          </div> 
+        )}
         <div class="led">
           <canvas ref={canvas => this.canvas = canvas as HTMLCanvasElement}></canvas>
         </div>
