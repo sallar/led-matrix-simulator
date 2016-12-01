@@ -1,8 +1,6 @@
 import { h, Component, render } from 'preact';
 import LedMatrix from './led/matrix';
 import { createStore } from './led/store';
-import { hexToRGB } from './led/tools';
-import { font } from './led/fonts/tama';
 import * as fonts from './led/fonts';
 
 interface State {
