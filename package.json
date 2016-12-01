@@ -12,12 +12,12 @@
     "preact": "^6.4.0",
     "style-loader": "^0.13.1",
     "ts-loader": "^1.2.2",
-    "typescript": "^2.0.10",
+    "typescript": "next",
     "webpack": "^1.13.3",
     "webpack-dev-server": "^1.16.2"
   },
   "scripts": {
     "build": "webpack",
-    "dev": "webpack-dev-server --open --content-base public/"
+    "dev": "webpack-dev-server --content-base public/"
   }
 }

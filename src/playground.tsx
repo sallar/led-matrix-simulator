@@ -3,7 +3,16 @@ import LedMatrix from './led/matrix';
 import { createStore } from './led/store';
 import { font, CHAR_WIDTH, CHAR_HEIGHT } from './led/fonts/5x5';
 
-class Playground extends Component {
+interface State {
+  cols?: number;
+  rows?: number;
+  text?: string;
+}
+
+class Playground extends Component<any, State> {
+  canvas: HTMLCanvasElement;
+  led: LedMatrix;
+  
   constructor() {
     super();
     this.state = {
@@ -25,7 +34,7 @@ class Playground extends Component {
     const store = createStore(this.state.cols, this.state.rows);
     const lines = this.state.text.split('\n');
 
-    lines.forEach((ch, line) => {
+    lines.forEach((ch: string, line: number) => {
       // For each character
       for (let i = 0; i < ch.length; i += 1) {
         const ind = ch.charCodeAt(i) - 32;
@@ -51,7 +60,7 @@ class Playground extends Component {
     this.led.draw(store.matrix);
   }
 
-  slideChange(e, prop) {
+  slideChange(e: any, prop: string) {
     this.setState({
       [prop]: parseInt(e.target.value)
     });
@@ -59,21 +68,23 @@ class Playground extends Component {
     this.draw();
   }
 
-  textChange(e) {
+  textChange(e: any) {
     this.setState({
       text: e.target.value
     });
     this.draw();
   }
 
-  render(_, { rows, cols, text }) {
+  render(_: any, { rows, cols, text }: State) {
     return (
       <div>
-        x: {cols} <input type="range" min="32" max="64" onInput={e => this.slideChange(e, 'cols')} value={cols}/><br/>
-        y: {rows} <input type="range" min="16" max="32" onInput={e => this.slideChange(e, 'rows')} value={rows}/><br/>
+        x: {cols}
+        <input type="range" min="32" max="64" onInput={e => this.slideChange(e, 'cols')} value={cols.toString()}/><br/>
+        y: {rows}
+        <input type="range" min="16" max="32" onInput={e => this.slideChange(e, 'rows')} value={rows.toString()}/><br/>
         <textarea value={text} onKeyUp={e => this.textChange(e)}/><br/>
         <div class="led">
-          <canvas ref={canvas => this.canvas = canvas}></canvas>
+          <canvas ref={canvas => this.canvas = canvas as HTMLCanvasElement}></canvas>
         </div>
       </div>
     )

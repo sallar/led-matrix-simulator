@@ -7,7 +7,7 @@ module.exports = {
     filename: 'bundle.js'
   },
   resolve: {
-    extensions: ['', '.json', '.ts', '.js', '.jsx'],
+    extensions: ['', '.json', '.ts', '.tsx', '.js', '.jsx'],
     alias: {
       'vue$': 'vue/dist/vue.common.js'
     }
