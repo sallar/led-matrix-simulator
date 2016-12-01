@@ -5,14 +5,6 @@
     <title>LED Matrix</title>
   </head>
   <body>
-    <div id="app">
-      x: {{ x }} <input type="range" min="32" max="64" v-model="x" v-on:change="change"><br>
-      y: {{ y }} <input type="range" min="16" max="32" v-model="y" v-on:change="change"><br>
-      Line 1 <input type="text" v-model="line1" v-on:keyup="change"><br>
-      Line 2 <input type="text" v-model="line2" v-on:keyup="change">
-    </div>
-    <div class="led">
-      <canvas class="matrix"></canvas>
-    </div>
+    <div id="root"></div>
   </body>
 </html>

@@ -1,3 +1,8 @@
 LED Matrix Simulator
 ===
-TBA.
+
+Technologies used:
+
+  - Typescript
+  - Preact
+  - HTML5 Canvas

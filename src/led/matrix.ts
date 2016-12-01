@@ -23,12 +23,12 @@ class LedMatrix {
 
 	constructor(canvas: HTMLCanvasElement, opts: ILedMatrixOptions = {}) {
   	this.canvas = canvas;
+    this.ctx = this.canvas.getContext('2d');
   	this.opts = Object.assign({}, DEFAULT_OPTS, opts);
     this.setup();
   }
   
-  setup() {
-  	this.ctx = this.canvas.getContext('2d');
+  private setup() {
   	const width = this.opts.x * (this.opts.pixelWidth + this.opts.margin);
     const height = this.opts.y * (this.opts.pixelHeight + this.opts.margin);
   	this.canvas.width = width;
@@ -37,10 +37,8 @@ class LedMatrix {
     this.canvas.style.height = `${height / 2}px`;
   }
   
-  draw(data: IMatrix) {
+  draw(data: IMatrix): void {
   	const { pixelWidth, pixelHeight, margin, x, y } = this.opts;
-
-  	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     const pixels = this.opts.x * this.opts.y;
 
     for (let i = 0; i < pixels; i += 1) {
@@ -56,6 +54,15 @@ class LedMatrix {
         pixelHeight
       );
     }
+  }
+
+  clear(): void {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  setNewDimensions(x: number, y: number): void {
+    this.opts = Object.assign({}, this.opts, { x, y });
+    this.setup();
   }
 }
 

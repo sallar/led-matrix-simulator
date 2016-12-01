@@ -7,7 +7,7 @@ module.exports = {
     filename: 'bundle.js'
   },
   resolve: {
-    extensions: ['', '.json', '.ts', '.js'],
+    extensions: ['', '.json', '.ts', '.js', '.jsx'],
     alias: {
       'vue$': 'vue/dist/vue.common.js'
     }
@@ -15,7 +15,11 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.ts$/,
+        test: /\.jsx$/,
+        loader: 'babel'
+      },
+      {
+        test: /\.tsx?$/,
         loader: 'ts'
       },
       {
