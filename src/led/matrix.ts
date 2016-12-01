@@ -6,6 +6,7 @@ interface ILedMatrixOptions {
   pixelWidth?: number;
   pixelHeight?: number;
   margin?: number;
+  glow?: boolean;
 }
 
 const DEFAULT_OPTS: ILedMatrixOptions = {
@@ -13,7 +14,8 @@ const DEFAULT_OPTS: ILedMatrixOptions = {
   y: 16,
   pixelWidth: 10,
   pixelHeight: 10,
-  margin: 4
+  margin: 4,
+  glow: false
 };
 
 class LedMatrix {
@@ -38,21 +40,26 @@ class LedMatrix {
   }
   
   draw(data: IMatrix): void {
-  	const { pixelWidth, pixelHeight, margin, x, y } = this.opts;
+  	const { pixelWidth, pixelHeight, margin, x, y, glow } = this.opts;
     const pixels = this.opts.x * this.opts.y;
 
     for (let i = 0; i < pixels; i += 1) {
       const { on, color } = data[i];
       const y = Math.floor(i / this.opts.x);
       const x = i - (y * this.opts.x);
+      const rgba = on ? `rgba(${color.r},${color.g},${color.b},${color.a})` : 'rgba(0,0,0,.1)';
       
-      this.ctx.fillStyle = on ? `rgba(${color.r},${color.g},${color.b},${color.a})` : 'rgba(0,0,0,.1)';
+      this.ctx.fillStyle = rgba;
       this.ctx.fillRect(
         x * (pixelWidth + margin),
         y * (pixelHeight + margin),
         pixelWidth,
         pixelHeight
       );
+      if (glow && on) {
+        this.ctx.shadowBlur = 5;
+        this.ctx.shadowColor = rgba;
+      }
     }
   }
 
