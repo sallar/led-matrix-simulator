@@ -50,6 +50,7 @@
 	const symbols_1 = __webpack_require__(10);
 	__webpack_require__(12);
 	preact_1.render(preact_1.h("div", null,
+	    preact_1.h("h1", null, "LED Simulator"),
 	    preact_1.h("h2", null, "Text Writer"),
 	    preact_1.h(playground_1.default, null),
 	    preact_1.h("h2", null, "Symbols"),
@@ -588,25 +589,27 @@
 	        this.draw();
 	    }
 	    render(_, { rows, cols, text, color, fonts, font }) {
-	        return (preact_1.h("div", null,
-	            "x: ",
-	            cols,
-	            preact_1.h("input", { type: "range", min: "32", max: "64", onInput: e => this.slideChange(e, 'cols'), value: cols.toString() }),
-	            preact_1.h("br", null),
-	            "y: ",
-	            rows,
-	            preact_1.h("input", { type: "range", min: "16", max: "32", onInput: e => this.slideChange(e, 'rows'), value: rows.toString() }),
-	            preact_1.h("br", null),
-	            preact_1.h("textarea", { value: text, onKeyUp: e => this.propChange(e, 'text') }),
-	            preact_1.h("br", null),
-	            preact_1.h("input", { type: "color", value: color, onChange: e => this.propChange(e, 'color') }),
-	            preact_1.h("br", null),
-	            fonts.map(fontName => preact_1.h("div", null,
-	                preact_1.h("input", { type: "radio", value: fontName, checked: fontName === font, onChange: e => this.propChange(e, 'font') }),
-	                " ",
-	                fontName)),
-	            preact_1.h("div", { class: "led" },
-	                preact_1.h("canvas", { ref: canvas => this.canvas = canvas }))));
+	        return (preact_1.h("div", { className: "row" },
+	            preact_1.h("div", { className: "column" },
+	                "x: ",
+	                cols,
+	                preact_1.h("input", { type: "range", min: "32", max: "64", onInput: e => this.slideChange(e, 'cols'), value: cols.toString() }),
+	                preact_1.h("br", null),
+	                "y: ",
+	                rows,
+	                preact_1.h("input", { type: "range", min: "16", max: "32", onInput: e => this.slideChange(e, 'rows'), value: rows.toString() }),
+	                preact_1.h("br", null),
+	                preact_1.h("textarea", { value: text, onKeyUp: e => this.propChange(e, 'text') }),
+	                preact_1.h("br", null),
+	                preact_1.h("input", { type: "color", value: color, onChange: e => this.propChange(e, 'color') }),
+	                preact_1.h("br", null),
+	                fonts.map(fontName => preact_1.h("label", null,
+	                    preact_1.h("input", { type: "radio", value: fontName, checked: fontName === font, onChange: e => this.propChange(e, 'font') }),
+	                    " ",
+	                    fontName))),
+	            preact_1.h("div", { className: "column column-60" },
+	                preact_1.h("div", { class: "led" },
+	                    preact_1.h("canvas", { ref: canvas => this.canvas = canvas })))));
 	    }
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -1113,14 +1116,14 @@
 	        this.draw();
 	    }
 	    render(_, { shape }) {
-	        return (preact_1.h("div", null,
-	            Object.keys(shape_1.shapes).map(shapeName => preact_1.h("label", null,
+	        return (preact_1.h("div", { className: "row" },
+	            preact_1.h("div", { className: "column" }, Object.keys(shape_1.shapes).map(shapeName => preact_1.h("label", null,
 	                preact_1.h("input", { type: "radio", value: shapeName, checked: shapeName === shape, onChange: e => this.handleShapeChange(shapeName) }),
 	                " ",
-	                shapeName)),
-	            preact_1.h("br", null),
-	            preact_1.h("div", { class: "led" },
-	                preact_1.h("canvas", { ref: canvas => this.canvas = canvas }))));
+	                shapeName))),
+	            preact_1.h("div", { className: "column column-60" },
+	                preact_1.h("div", { class: "led" },
+	                    preact_1.h("canvas", { ref: canvas => this.canvas = canvas })))));
 	    }
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
