@@ -12,6 +12,10 @@ Technologies used:
   - Typescript
   - Preact
   - HTML5 Canvas
+  
+<p align="center">
+  <img src="https://dl.dropboxusercontent.com/u/16657557/Works/matrix.png" height="252"/>
+</p>
 
 ## Bitmap fonts
 
