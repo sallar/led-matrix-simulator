@@ -1,8 +1,0 @@
-.led {
-  border-radius: 4px;
-  background: linear-gradient(to bottom, rgba(56,56,56,1) 0%,rgba(33,33,33,1) 100%);
-  box-shadow: 0 1px 0 #fff, inset 0 1px #555;
-  border: 1px solid #333;
-  padding: 5px;
-  display: inline-block;
-}
