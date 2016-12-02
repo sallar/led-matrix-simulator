@@ -647,6 +647,9 @@
 	    draw(data) {
 	        const { pixelWidth, pixelHeight, margin, x, y, glow } = this.opts;
 	        const pixels = this.opts.x * this.opts.y;
+	        if (data.length !== pixels) {
+	            throw new Error('`data` needs to be provided fully. Length is insufficient.');
+	        }
 	        for (let i = 0; i < pixels; i += 1) {
 	            const { on, color } = data[i];
 	            const y = Math.floor(i / this.opts.x);
@@ -683,10 +686,12 @@
 	        on: false
 	    });
 	    const fill = (x = 0, y = 0, r = 0, g = 0, b = 0, a = 1) => {
-	        matrix[(y * xw) + x] = {
-	            on: true,
-	            color: { r, g, b, a }
-	        };
+	        if (x < xw && y < yw) {
+	            matrix[(y * xw) + x] = {
+	                on: true,
+	                color: { r, g, b, a }
+	            };
+	        }
 	    };
 	    const write = (text, font, color) => {
 	        const lines = text.split('\n');
