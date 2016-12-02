@@ -43,6 +43,10 @@ class LedMatrix {
   	const { pixelWidth, pixelHeight, margin, x, y, glow } = this.opts;
     const pixels = this.opts.x * this.opts.y;
 
+    if (data.length !== pixels) {
+      throw new Error('`data` needs to be provided fully. Length is insufficient.');
+    }
+
     for (let i = 0; i < pixels; i += 1) {
       const { on, color } = data[i];
       const y = Math.floor(i / this.opts.x);

@@ -20,7 +20,7 @@ interface IPixel {
   color?: IColor;
 }
 
-export interface IMatrix {
+export interface IMatrix extends Array<any> {
   [index: number]: IPixel;
 }
 
@@ -36,10 +36,13 @@ export function createStore(xw: number, yw: number): IStore {
   });
 
   const fill: IFill = (x = 0, y = 0, r = 0, g = 0, b = 0, a = 1) => {
-    matrix[(y * xw) + x] = {
-      on: true,
-      color: { r, g, b, a }
-    };
+    // If not in boundries, dont paint
+    if (x < xw && y < yw) {
+      matrix[(y * xw) + x] = {
+        on: true,
+        color: { r, g, b, a }
+      };
+    }
   };
 
   const write: IWrite = (text, font, color) => {
