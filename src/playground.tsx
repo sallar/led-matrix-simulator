@@ -37,8 +37,10 @@ class Playground extends Component<any, State> {
   }
 
   draw() {
+    // keep ascii codes 0 - 127 
+    const text = this.state.text.replace(/[^\x00-\x7F]/g, '');
     const store = createStore(this.state.cols, this.state.rows);
-    store.write(this.state.text, (fonts as any)[this.state.font], this.state.color);
+    store.write(text, (fonts as any)[this.state.font], this.state.color);
     this.led.clear();
     this.led.draw(store.matrix);
   }
