@@ -1199,8 +1199,9 @@
 	        this.draw();
 	    };
 	    Playground.prototype.draw = function () {
+	        var text = this.state.text.replace(/[^\x00-\x7F]/g, '');
 	        var store = store_1.createStore(this.state.cols, this.state.rows);
-	        store.write(this.state.text, fonts[this.state.font], this.state.color);
+	        store.write(text, fonts[this.state.font], this.state.color);
 	        this.led.clear();
 	        this.led.draw(store.matrix);
 	    };
