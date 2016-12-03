@@ -41,8 +41,9 @@ class Symbols extends Component<any, State> {
           store.fill(x, y, c[0], c[1], c[2], c[3]);
         }
     }
+    this.led.setData(store.matrix);
     this.led.clear();
-    this.led.draw(store.matrix);
+    this.led.render();
   }
 
   handleShapeChange(shape: string) {
