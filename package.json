@@ -2,10 +2,12 @@
   "name": "matrix",
   "version": "0.1.0",
   "devDependencies": {
+    "@types/core-js": "^0.9.35",
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
     "babel-plugin-transform-react-jsx": "^6.8.0",
     "babel-preset-es2015": "^6.18.0",
+    "core-js": "^2.4.1",
     "css-loader": "^0.26.0",
     "html-loader": "^0.4.4",
     "html-webpack-plugin": "^2.24.1",
