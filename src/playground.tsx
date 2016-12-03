@@ -10,6 +10,7 @@ interface State {
   color?: string;
   fonts?: string[];
   font?: string;
+  animated?: boolean;
 }
 
 class Playground extends Component<any, State> {
@@ -24,7 +25,8 @@ class Playground extends Component<any, State> {
       text: 'Hello\nThere',
       color: '#5fd3ff',
       fonts: Object.keys(fonts),
-      font: 'fivebyfive'
+      font: 'fivebyfive',
+      animated: false
     };
   }
 
@@ -41,15 +43,19 @@ class Playground extends Component<any, State> {
     const text = this.state.text.replace(/[^\x00-\x7F]/g, '');
     const store = createStore(this.state.cols, this.state.rows);
     store.write(text, (fonts as any)[this.state.font], this.state.color);
+    this.led.setData(store.matrix);
     this.led.clear();
-    this.led.draw(store.matrix);
+    this.led.render();
   }
 
   slideChange(e: any, prop: string) {
     this.setState({
       [prop]: parseInt(e.target.value)
     });
-    this.led.setNewDimensions(this.state.cols, this.state.rows);
+    this.led.setNewOptions({
+      x: this.state.cols,
+      y: this.state.rows
+    })
     this.draw();
   }
 
@@ -60,7 +66,17 @@ class Playground extends Component<any, State> {
     this.draw();
   }
 
-  render(_: any, { rows, cols, text, color, fonts, font }: State) {
+  animatedChange(e: any) {
+    this.setState({
+      animated: !this.state.animated
+    });
+    this.led.setNewOptions({
+      animated: this.state.animated
+    });
+    this.draw();
+  }
+
+  render(_: any, { rows, cols, text, color, fonts, font, animated }: State) {
     return (
       <div className="row">
         <div className="column">
@@ -68,6 +84,7 @@ class Playground extends Component<any, State> {
           <input type="range" min="32" max="64" onInput={e => this.slideChange(e, 'cols')} value={cols.toString()}/><br/>
           y: {rows}
           <input type="range" min="16" max="32" onInput={e => this.slideChange(e, 'rows')} value={rows.toString()}/><br/>
+          <input type="checkbox" checked={animated} onChange={e => this.animatedChange(e)}/> Animated
           <textarea value={text} onKeyUp={e => this.propChange(e, 'text')}/><br/>
           <input type="color" value={color} onChange={e => this.propChange(e, 'color')}/><br/>
           {fonts.map(fontName =>
