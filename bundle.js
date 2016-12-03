@@ -1187,7 +1187,8 @@
 	            text: 'Hello\nThere',
 	            color: '#5fd3ff',
 	            fonts: Object.keys(fonts),
-	            font: 'fivebyfive'
+	            font: 'fivebyfive',
+	            animated: false
 	        };
 	        return _this;
 	    }
@@ -1202,14 +1203,18 @@
 	        var text = this.state.text.replace(/[^\x00-\x7F]/g, '');
 	        var store = store_1.createStore(this.state.cols, this.state.rows);
 	        store.write(text, fonts[this.state.font], this.state.color);
+	        this.led.setData(store.matrix);
 	        this.led.clear();
-	        this.led.draw(store.matrix);
+	        this.led.render();
 	    };
 	    Playground.prototype.slideChange = function (e, prop) {
 	        this.setState((_a = {},
 	            _a[prop] = parseInt(e.target.value),
 	            _a));
-	        this.led.setNewDimensions(this.state.cols, this.state.rows);
+	        this.led.setNewOptions({
+	            x: this.state.cols,
+	            y: this.state.rows
+	        });
 	        this.draw();
 	        var _a;
 	    };
@@ -1220,9 +1225,18 @@
 	        this.draw();
 	        var _a;
 	    };
+	    Playground.prototype.animatedChange = function (e) {
+	        this.setState({
+	            animated: !this.state.animated
+	        });
+	        this.led.setNewOptions({
+	            animated: this.state.animated
+	        });
+	        this.draw();
+	    };
 	    Playground.prototype.render = function (_, _a) {
 	        var _this = this;
-	        var rows = _a.rows, cols = _a.cols, text = _a.text, color = _a.color, fonts = _a.fonts, font = _a.font;
+	        var rows = _a.rows, cols = _a.cols, text = _a.text, color = _a.color, fonts = _a.fonts, font = _a.font, animated = _a.animated;
 	        return (preact_1.h("div", { className: "row" },
 	            preact_1.h("div", { className: "column" },
 	                "x: ",
@@ -1233,6 +1247,8 @@
 	                rows,
 	                preact_1.h("input", { type: "range", min: "16", max: "32", onInput: function (e) { return _this.slideChange(e, 'rows'); }, value: rows.toString() }),
 	                preact_1.h("br", null),
+	                preact_1.h("input", { type: "checkbox", checked: animated, onChange: function (e) { return _this.animatedChange(e); } }),
+	                " Animated",
 	                preact_1.h("textarea", { value: text, onKeyUp: function (e) { return _this.propChange(e, 'text'); } }),
 	                preact_1.h("br", null),
 	                preact_1.h("input", { type: "color", value: color, onChange: function (e) { return _this.propChange(e, 'color'); } }),
@@ -1264,11 +1280,14 @@
 	    pixelWidth: 10,
 	    pixelHeight: 10,
 	    margin: 4,
-	    glow: false
+	    glow: false,
+	    animated: false
 	};
 	var LedMatrix = (function () {
 	    function LedMatrix(canvas, opts) {
 	        if (opts === void 0) { opts = {}; }
+	        this.data = [];
+	        this.offset = 0;
 	        this.canvas = canvas;
 	        this.ctx = this.canvas.getContext('2d');
 	        this.opts = Object.assign({}, DEFAULT_OPTS, opts);
@@ -1282,31 +1301,58 @@
 	        this.canvas.style.width = width / 2 + "px";
 	        this.canvas.style.height = height / 2 + "px";
 	    };
-	    LedMatrix.prototype.draw = function (data) {
-	        var _a = this.opts, pixelWidth = _a.pixelWidth, pixelHeight = _a.pixelHeight, margin = _a.margin, x = _a.x, y = _a.y, glow = _a.glow;
-	        var pixels = this.opts.x * this.opts.y;
-	        if (data.length !== pixels) {
+	    LedMatrix.prototype.render = function () {
+	        if (this.rAF) {
+	            cancelAnimationFrame(this.rAF);
+	        }
+	        this.draw();
+	    };
+	    LedMatrix.prototype.draw = function () {
+	        var _a = this.opts, pixelWidth = _a.pixelWidth, pixelHeight = _a.pixelHeight, margin = _a.margin, x = _a.x, y = _a.y, glow = _a.glow, animated = _a.animated;
+	        var pixels = x * y;
+	        if (this.data.length !== pixels) {
 	            throw new Error('`data` needs to be provided fully. Length is insufficient.');
 	        }
 	        for (var i = 0; i < pixels; i += 1) {
-	            var _b = data[i], on = _b.on, color = _b.color;
-	            var y_1 = Math.floor(i / this.opts.x);
-	            var x_1 = i - (y_1 * this.opts.x);
+	            var _b = this.data[i], on = _b.on, color = _b.color;
 	            var rgba = on ? "rgba(" + color.r + "," + color.g + "," + color.b + "," + color.a + ")" : 'rgba(0,0,0,.1)';
+	            var dy = Math.floor(i / x);
+	            var dx = i - (dy * x);
+	            if (animated) {
+	                dx -= this.offset;
+	                dx = (dx < 0) ? (x - 1) - Math.abs(dx) : dx;
+	            }
 	            this.ctx.fillStyle = rgba;
-	            this.ctx.fillRect(x_1 * (pixelWidth + margin), y_1 * (pixelHeight + margin), pixelWidth, pixelHeight);
+	            this.ctx.fillRect(dx * (pixelWidth + margin), dy * (pixelHeight + margin), pixelWidth, pixelHeight);
 	            if (glow && on) {
 	                this.ctx.shadowBlur = 5;
 	                this.ctx.shadowColor = rgba;
 	            }
 	        }
+	        if (animated) {
+	            this.animate();
+	        }
+	    };
+	    LedMatrix.prototype.animate = function () {
+	        var _this = this;
+	        this.offset += 1;
+	        if (this.offset >= this.opts.x) {
+	            this.offset = 0;
+	        }
+	        this.rAF = requestAnimationFrame(function () {
+	            _this.clear();
+	            _this.draw();
+	        });
 	    };
 	    LedMatrix.prototype.clear = function () {
 	        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	    };
-	    LedMatrix.prototype.setNewDimensions = function (x, y) {
-	        this.opts = Object.assign({}, this.opts, { x: x, y: y });
+	    LedMatrix.prototype.setNewOptions = function (opts) {
+	        this.opts = Object.assign({}, this.opts, opts);
 	        this.setup();
+	    };
+	    LedMatrix.prototype.setData = function (data) {
+	        this.data = data;
 	    };
 	    return LedMatrix;
 	}());
@@ -1763,8 +1809,9 @@
 	                store.fill(x, y, c[0], c[1], c[2], c[3]);
 	            }
 	        }
+	        this.led.setData(store.matrix);
 	        this.led.clear();
-	        this.led.draw(store.matrix);
+	        this.led.render();
 	    };
 	    Symbols.prototype.handleShapeChange = function (shape) {
 	        this.setState({
