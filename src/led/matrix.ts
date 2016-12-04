@@ -1,6 +1,6 @@
 import { IMatrix } from './store';
 
-interface ILedMatrixOptions {
+export interface ILedMatrixOptions {
   x?: number;
   y?: number;
   pixelWidth?: number;
@@ -48,6 +48,7 @@ class LedMatrix {
     if (this.rAF) {
       cancelAnimationFrame(this.rAF);
     }
+    this.clear();
     this.draw();
   }
   
@@ -69,6 +70,13 @@ class LedMatrix {
         dx -= this.offset;
         dx = (dx < 0) ? (x - 1) - Math.abs(dx) : dx;
       }
+
+      if (glow && on) {
+        this.ctx.shadowBlur = 5;
+        this.ctx.shadowColor = rgba;
+      } else {
+        this.ctx.shadowBlur = 0;
+      }
       
       this.ctx.fillStyle = rgba;
       this.ctx.fillRect(
@@ -77,11 +85,6 @@ class LedMatrix {
         pixelWidth,
         pixelHeight
       );
-
-      if (glow && on) {
-        this.ctx.shadowBlur = 5;
-        this.ctx.shadowColor = rgba;
-      }
     }
 
     if (animated) {
