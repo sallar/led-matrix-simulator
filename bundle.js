@@ -50,8 +50,8 @@
 	__webpack_require__(33);
 	var preact_1 = __webpack_require__(46);
 	var playground_1 = __webpack_require__(47);
-	var symbols_1 = __webpack_require__(55);
-	__webpack_require__(57);
+	var symbols_1 = __webpack_require__(56);
+	__webpack_require__(58);
 	preact_1.render(preact_1.h("div", null,
 	    preact_1.h("h1", null, "LED Simulator"),
 	    preact_1.h("h2", null, "Text Writer"),
@@ -1174,9 +1174,9 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var preact_1 = __webpack_require__(46);
-	var matrix_1 = __webpack_require__(48);
-	var store_1 = __webpack_require__(49);
-	var fonts = __webpack_require__(51);
+	var simulator_1 = __webpack_require__(48);
+	var store_1 = __webpack_require__(50);
+	var fonts = __webpack_require__(52);
 	var Playground = (function (_super) {
 	    __extends(Playground, _super);
 	    function Playground() {
@@ -1188,33 +1188,24 @@
 	            color: '#5fd3ff',
 	            fonts: Object.keys(fonts),
 	            font: 'fivebyfive',
-	            animated: false
+	            animated: false,
+	            glow: false
 	        };
 	        return _this;
 	    }
-	    Playground.prototype.componentDidMount = function () {
-	        this.led = new matrix_1.default(this.canvas, {
-	            x: this.state.cols,
-	            y: this.state.rows
-	        });
+	    Playground.prototype.componentWillMount = function () {
 	        this.draw();
 	    };
 	    Playground.prototype.draw = function () {
 	        var text = this.state.text.replace(/[^\x00-\x7F]/g, '');
 	        var store = store_1.createStore(this.state.cols, this.state.rows);
 	        store.write(text, fonts[this.state.font], this.state.color);
-	        this.led.setData(store.matrix);
-	        this.led.clear();
-	        this.led.render();
+	        this.setState({ data: store.matrix });
 	    };
 	    Playground.prototype.slideChange = function (e, prop) {
 	        this.setState((_a = {},
 	            _a[prop] = parseInt(e.target.value),
 	            _a));
-	        this.led.setNewOptions({
-	            x: this.state.cols,
-	            y: this.state.rows
-	        });
 	        this.draw();
 	        var _a;
 	    };
@@ -1225,18 +1216,16 @@
 	        this.draw();
 	        var _a;
 	    };
-	    Playground.prototype.animatedChange = function (e) {
-	        this.setState({
-	            animated: !this.state.animated
-	        });
-	        this.led.setNewOptions({
-	            animated: this.state.animated
-	        });
+	    Playground.prototype.propToggle = function (e, prop) {
+	        this.setState((_a = {},
+	            _a[prop] = !this.state[prop],
+	            _a));
 	        this.draw();
+	        var _a;
 	    };
 	    Playground.prototype.render = function (_, _a) {
 	        var _this = this;
-	        var rows = _a.rows, cols = _a.cols, text = _a.text, color = _a.color, fonts = _a.fonts, font = _a.font, animated = _a.animated;
+	        var rows = _a.rows, cols = _a.cols, text = _a.text, color = _a.color, fonts = _a.fonts, font = _a.font, animated = _a.animated, data = _a.data, glow = _a.glow;
 	        return (preact_1.h("div", { className: "row" },
 	            preact_1.h("div", { className: "column" },
 	                "x: ",
@@ -1247,8 +1236,10 @@
 	                rows,
 	                preact_1.h("input", { type: "range", min: "16", max: "32", onInput: function (e) { return _this.slideChange(e, 'rows'); }, value: rows.toString() }),
 	                preact_1.h("br", null),
-	                preact_1.h("input", { type: "checkbox", checked: animated, onChange: function (e) { return _this.animatedChange(e); } }),
+	                preact_1.h("input", { type: "checkbox", checked: animated, onChange: function (e) { return _this.propToggle(e, 'animated'); } }),
 	                " Animated",
+	                preact_1.h("input", { type: "checkbox", checked: glow, onChange: function (e) { return _this.propToggle(e, 'glow'); } }),
+	                " Glow",
 	                preact_1.h("textarea", { value: text, onKeyUp: function (e) { return _this.propChange(e, 'text'); } }),
 	                preact_1.h("br", null),
 	                preact_1.h("input", { type: "color", value: color, onChange: function (e) { return _this.propChange(e, 'color'); } }),
@@ -1261,7 +1252,7 @@
 	                })),
 	            preact_1.h("div", { className: "column column-60" },
 	                preact_1.h("div", { class: "led" },
-	                    preact_1.h("canvas", { ref: function (canvas) { return _this.canvas = canvas; } })))));
+	                    preact_1.h(simulator_1.default, { data: data, x: cols, y: rows, animated: animated, glow: glow })))));
 	    };
 	    return Playground;
 	}(preact_1.Component));
@@ -1271,6 +1262,68 @@
 
 /***/ },
 /* 48 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var __rest = (this && this.__rest) || function (s, e) {
+	    var t = {};
+	    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+	        t[p] = s[p];
+	    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+	        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+	            t[p[i]] = s[p[i]];
+	    return t;
+	};
+	var preact_1 = __webpack_require__(46);
+	var matrix_1 = __webpack_require__(49);
+	var Simulator = (function (_super) {
+	    __extends(Simulator, _super);
+	    function Simulator(props) {
+	        var _this = _super.call(this, props) || this;
+	        var data = props.data, children = props.children, options = __rest(props, ["data", "children"]);
+	        _this.state = {
+	            data: data,
+	            options: options
+	        };
+	        return _this;
+	    }
+	    Simulator.prototype.componentDidMount = function () {
+	        this.led = new matrix_1.default(this.canvas, this.state.options);
+	        this.led.setData(this.state.data);
+	        this.draw();
+	    };
+	    Simulator.prototype.componentWillReceiveProps = function (nextProps) {
+	        var data = nextProps.data, children = nextProps.children, options = __rest(nextProps, ["data", "children"]);
+	        if (options !== this.state.options) {
+	            this.led.setNewOptions(options);
+	            this.setState({ options: options });
+	        }
+	        if (data !== this.state.data) {
+	            this.led.setData(data);
+	            this.setState({ data: data });
+	        }
+	        this.draw();
+	    };
+	    Simulator.prototype.draw = function () {
+	        this.led.render();
+	    };
+	    Simulator.prototype.render = function () {
+	        var _this = this;
+	        return (preact_1.h("canvas", { ref: function (canvas) { return _this.canvas = canvas; } }));
+	    };
+	    return Simulator;
+	}(preact_1.Component));
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = Simulator;
+
+
+/***/ },
+/* 49 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1305,6 +1358,7 @@
 	        if (this.rAF) {
 	            cancelAnimationFrame(this.rAF);
 	        }
+	        this.clear();
 	        this.draw();
 	    };
 	    LedMatrix.prototype.draw = function () {
@@ -1322,12 +1376,15 @@
 	                dx -= this.offset;
 	                dx = (dx < 0) ? (x - 1) - Math.abs(dx) : dx;
 	            }
-	            this.ctx.fillStyle = rgba;
-	            this.ctx.fillRect(dx * (pixelWidth + margin), dy * (pixelHeight + margin), pixelWidth, pixelHeight);
 	            if (glow && on) {
 	                this.ctx.shadowBlur = 5;
 	                this.ctx.shadowColor = rgba;
 	            }
+	            else {
+	                this.ctx.shadowBlur = 0;
+	            }
+	            this.ctx.fillStyle = rgba;
+	            this.ctx.fillRect(dx * (pixelWidth + margin), dy * (pixelHeight + margin), pixelWidth, pixelHeight);
 	        }
 	        if (animated) {
 	            this.animate();
@@ -1361,11 +1418,11 @@
 
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var tools_1 = __webpack_require__(50);
+	var tools_1 = __webpack_require__(51);
 	function createStore(xw, yw) {
 	    var matrix = Array(xw * yw).fill({
 	        on: false
@@ -1414,7 +1471,7 @@
 
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1435,24 +1492,24 @@
 
 
 /***/ },
-/* 51 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var _5x5_1 = __webpack_require__(52);
-	exports.fivebyfive = _5x5_1.font;
-	var tama_1 = __webpack_require__(53);
-	exports.tama = tama_1.font;
-	var m38_1 = __webpack_require__(54);
-	exports.m38 = m38_1.font;
-
-
-/***/ },
 /* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var tools_1 = __webpack_require__(50);
+	var _5x5_1 = __webpack_require__(53);
+	exports.fivebyfive = _5x5_1.font;
+	var tama_1 = __webpack_require__(54);
+	exports.tama = tama_1.font;
+	var m38_1 = __webpack_require__(55);
+	exports.m38 = m38_1.font;
+
+
+/***/ },
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var tools_1 = __webpack_require__(51);
 	exports.font = tools_1.prepareFont([
 	    [0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
 	    [0x5c, 0x00, 0x00, 0x00, 0x00, 0x00],
@@ -1554,11 +1611,11 @@
 
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var tools_1 = __webpack_require__(50);
+	var tools_1 = __webpack_require__(51);
 	exports.font = tools_1.prepareFont([
 	    [0x00, 0x00, 0x00, 0x00, 0x00],
 	    [0x2f, 0x00, 0x00, 0x00, 0x00],
@@ -1660,11 +1717,11 @@
 
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var tools_1 = __webpack_require__(50);
+	var tools_1 = __webpack_require__(51);
 	exports.font = tools_1.prepareFont([
 	    [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
 	    [0xdf, 0xdf, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
@@ -1766,7 +1823,7 @@
 
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1776,48 +1833,40 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var preact_1 = __webpack_require__(46);
-	var matrix_1 = __webpack_require__(48);
-	var store_1 = __webpack_require__(49);
-	var tools_1 = __webpack_require__(50);
-	var shape_1 = __webpack_require__(56);
+	var simulator_1 = __webpack_require__(48);
+	var store_1 = __webpack_require__(50);
+	var tools_1 = __webpack_require__(51);
+	var shape_1 = __webpack_require__(57);
+	function shapeToMatrix(shapeName) {
+	    var c = tools_1.hexToRGB(shape_1.colors[Math.floor(Math.random() * (shape_1.colors.length - 1))]);
+	    var shape = shape_1.shapes[shapeName];
+	    var len = shape.length;
+	    var width = Math.sqrt(len);
+	    var store = store_1.createStore(width, width);
+	    for (var i = 0; i < len; i += 1) {
+	        var y = Math.floor(i / width);
+	        var x = i - (y * width);
+	        if (shape_1.shapes[shapeName][i] === 1) {
+	            store.fill(x, y, c[0], c[1], c[2], c[3]);
+	        }
+	    }
+	    return store.matrix;
+	}
 	var Symbols = (function (_super) {
 	    __extends(Symbols, _super);
 	    function Symbols() {
 	        var _this = _super.call(this) || this;
 	        _this.state = {
-	            shape: 'cross'
+	            shape: 'cross',
+	            data: shapeToMatrix('cross')
 	        };
 	        return _this;
 	    }
-	    Symbols.prototype.componentDidMount = function () {
-	        this.led = new matrix_1.default(this.canvas, {
-	            x: 11,
-	            y: 11
-	        });
-	        this.draw();
-	    };
-	    Symbols.prototype.draw = function () {
-	        var c = tools_1.hexToRGB(shape_1.colors[Math.floor(Math.random() * (shape_1.colors.length - 1))]);
-	        var shape = shape_1.shapes[this.state.shape];
-	        var len = shape.length;
-	        var width = Math.sqrt(len);
-	        var store = store_1.createStore(width, width);
-	        for (var i = 0; i < len; i += 1) {
-	            var y = Math.floor(i / width);
-	            var x = i - (y * width);
-	            if (shape_1.shapes[this.state.shape][i] === 1) {
-	                store.fill(x, y, c[0], c[1], c[2], c[3]);
-	            }
-	        }
-	        this.led.setData(store.matrix);
-	        this.led.clear();
-	        this.led.render();
-	    };
 	    Symbols.prototype.handleShapeChange = function (shape) {
 	        this.setState({
-	            shape: shape
+	            shape: shape,
+	            data: shapeToMatrix(shape)
 	        });
-	        this.draw();
 	    };
 	    Symbols.prototype.render = function (_, _a) {
 	        var _this = this;
@@ -1831,7 +1880,7 @@
 	            })),
 	            preact_1.h("div", { className: "column column-60" },
 	                preact_1.h("div", { class: "led" },
-	                    preact_1.h("canvas", { ref: function (canvas) { return _this.canvas = canvas; } })))));
+	                    preact_1.h(simulator_1.default, { data: this.state.data, x: 11, y: 11, pixelHeight: 20, pixelWidth: 20, glow: true })))));
 	    };
 	    return Symbols;
 	}(preact_1.Component));
@@ -1840,7 +1889,7 @@
 
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1967,16 +2016,16 @@
 
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(58);
+	var content = __webpack_require__(59);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(60)(content, {});
+	var update = __webpack_require__(61)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -1993,21 +2042,21 @@
 	}
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(59)();
+	exports = module.exports = __webpack_require__(60)();
 	// imports
 
 
 	// module
-	exports.push([module.id, ".led {\n  border-radius: 4px;\n  background: linear-gradient(to bottom, rgba(56,56,56,1) 0%,rgba(33,33,33,1) 100%);\n  box-shadow: 0 1px 0 #fff, inset 0 1px #555;\n  border: 1px solid #333;\n  padding: 5px;\n  display: inline-block;\n}\n", ""]);
+	exports.push([module.id, ".led {\n  border-radius: 4px;\n  background: linear-gradient(to bottom, rgba(56,56,56,1) 0%,rgba(33,33,33,1) 100%);\n  box-shadow: 0 1px 0 #fff, inset 0 1px #555;\n  border: 1px solid #333;\n  padding: 5px;\n  display: inline-block;\n}\n\n.led canvas {\n  display: block;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports) {
 
 	/*
@@ -2063,7 +2112,7 @@
 
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
