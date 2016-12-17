@@ -86,19 +86,20 @@ function loop() {
   y3  = Math.trunc(Math.sin(angle3) * radius3 + centery3);
   y4  = Math.trunc(Math.sin(angle4) * radius4 + centery4);
 
-
   for (y = 0; y < 16; y++) {
     x1 = sx1; x2 = sx2; x3 = sx3; x4 = sx4;
     for (x = 0; x < 32; x++) {
       value = hueShift
-        + (sinetab[(x1 * x1 + y1 * y1) >>> 6] || 0)
-        + (sinetab[(x2 * x2 + y2 * y2) >>> 6] || 0)
-        + (sinetab[(x3 * x3 + y3 * y3) >>> 7] || 0)
-        + (sinetab[(x4 * x4 + y4 * y4) >>> 7] || 0);
-        //console.log(Math.abs(value));
-      //const { r, g, b } = HSVtoRGB(Math.abs(value) * 3, 255, 255);
-      //console.log(r, g, b);
-      store.fill(x, y, Math.abs(value * 3), 255, 255, 1);
+        + sinetab[Math.abs((x1 * x1 + y1 * y1)) >>> 7]
+        + sinetab[Math.abs((x2 * x2 + y2 * y2)) >>> 7]
+        + sinetab[Math.abs((x3 * x3 + y3 * y3)) >>> 8]
+        + sinetab[Math.abs((x4 * x4 + y4 * y4)) >>> 8];
+
+      if (value) {
+        const { r, g, b } = HSVtoRGB((value) / 255, 1, 1);
+        store.fill(x, y, r || 0, g || 0, b || 0, 1);
+      }
+      
       x1--; x2--; x3--; x4--;
     }
     y1--; y2--; y3--; y4--;
