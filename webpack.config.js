@@ -12,7 +12,7 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.jsx$/,
+        test: /\.jsx/,
         loader: 'babel'
       },
       {
@@ -33,5 +33,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html'
     })
-  ]
+  ],
+
+  node: {
+    fs: 'empty'
+  }
 };

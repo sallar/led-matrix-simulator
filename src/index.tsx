@@ -6,6 +6,7 @@ import 'core-js/fn/object/assign';
 import { h, render } from 'preact';
 import Playground from './playground';
 import Symbol from './symbols';
+import Plasma from './plasma';
 import './style.css';
 
 render(
@@ -15,6 +16,8 @@ render(
     <Playground/>
     <h2>Symbols</h2>
     <Symbol/>
+    <h2>Plasma</h2>
+    <Plasma/>
   </div>,
   document.getElementById('root')
 );
