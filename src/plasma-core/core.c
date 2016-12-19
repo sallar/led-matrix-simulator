@@ -1,3 +1,5 @@
+// Copied from https://github.com/adafruit/RGB-matrix-Panel
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
