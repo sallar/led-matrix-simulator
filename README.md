@@ -46,3 +46,12 @@ From here it get's easy. `00010010` is a column on the display, and six of those
 ## LICENSE
 
 Released under the [MIT License](https://sallar.mit-license.org/).
+
+### Adafruit Plasma Example
+
+The original code for the Plasma example is copied over from the [Adafruit RGB Matrix panel library](https://github.com/adafruit/RGB-matrix-Panel) examples directory.
+
+```
+Written by Limor Fried/Ladyada & Phil Burgess/PaintYourDragon for Adafruit Industries.  
+BSD license, all text above must be included in any redistribution
+```
