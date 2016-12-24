@@ -1,7 +1,6 @@
 import { h, Component, render } from 'preact';
 import Simulator from './simulator';
-import { createStore } from './led/store';
-import { hexToRGB } from './led/tools';
+import { createStore, hexToRGB } from 'led-matrix';
 import { shapes, colors } from './shape';
 
 function shapeToMatrix(shapeName: string) {

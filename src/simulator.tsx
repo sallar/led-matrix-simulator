@@ -1,6 +1,5 @@
 import { h, Component, render } from 'preact';
-import LedMatrix, { ILedMatrixOptions } from './led/matrix';
-import { IMatrix } from './led/store';
+import { LedMatrix, IMatrix, ILedMatrixOptions } from 'led-matrix';
 
 interface State {
   data?: IMatrix;
