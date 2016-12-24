@@ -1,7 +1,7 @@
 import { h, Component, render } from 'preact';
 import Simulator from './simulator';
-import { createStore } from './led/store';
-import * as fonts from './led/fonts';
+import { createStore } from 'led-matrix';
+import * as fonts from './fonts';
 
 interface State {
   cols?: number;

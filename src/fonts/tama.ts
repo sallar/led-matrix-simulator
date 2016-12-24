@@ -1,4 +1,4 @@
-import { prepareFont } from '../tools';
+import { prepareFont } from 'led-matrix';
 
 export const font = prepareFont([
 	[0x00,0x00,0x00,0x00,0x00], //  

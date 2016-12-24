@@ -1,7 +1,6 @@
 import { h, Component, render } from 'preact';
 import Simulator from './simulator';
-import { createStore, IStore } from './led/store';
-import { hexToRGB } from './led/tools';
+import { createStore, IStore, hexToRGB } from 'led-matrix';
 import { shapes, colors } from './shape';
 import * as api from './plasma-core/api';
 
