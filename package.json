@@ -2,6 +2,8 @@
   "name": "matrix",
   "version": "0.1.0",
   "devDependencies": {
+    "@types/core-js": "^0.9.43",
+    "@types/node": "^6.0.92",
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
     "babel-plugin-transform-react-jsx": "^6.8.0",
@@ -13,8 +15,8 @@
     "led-matrix": "^0.0.3",
     "preact": "^6.4.0",
     "style-loader": "^0.13.1",
-    "ts-loader": "^1.2.2",
-    "typescript": "next",
+    "ts-loader": "^3.1.1",
+    "typescript": "^2.6.1",
     "webpack": "^1.13.3",
     "webpack-dev-server": "^1.16.2"
   },
@@ -22,7 +24,5 @@
     "build": "webpack",
     "dev": "webpack-dev-server --content-base public/"
   },
-  "dependencies": {
-    "@types/node": "^6.0.52"
-  }
+  "dependencies": {}
 }
