@@ -43,6 +43,12 @@ To turn this into pixel data, each hex item needs to be converted to binary. Thi
 
 From here it get's easy. `00010010` is a column on the display, and six of those form a letter. [Read more about these fonts](http://jared.geek.nz/2014/jan/custom-fonts-for-microcontrollers).
 
+## Related
+
++ [matrix-display-store](https://github.com/sallar/matrix-display-store)
++ [rpi-matrix](https://github.com/sallar/rpi-matrix)
++ [led-matrix](https://github.com/sallar/led-matrix)
+
 ## LICENSE
 
 Released under the [MIT License](https://sallar.mit-license.org/).
